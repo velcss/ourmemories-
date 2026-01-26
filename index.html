@@ -6,405 +6,326 @@
     <title>Ivan ❤️ Eunice | Our Moments</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* CSS stays exactly the same as your provided code */
         :root { --bg: #f8f9fa; --accent: #6366f1; --glass: rgba(255, 255, 255, 0.85); --text: #1f2937; --danger: #ef4444; }
-        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); background-attachment: fixed; color: var(--text); margin: 0; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
-        .admin-login-btn { font-family: 'Poppins', sans-serif; position: absolute; top: 15px; left: 15px; background: var(--glass); border: 1px solid rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 12px; font-size: 11px; font-weight: 500; cursor: pointer; backdrop-filter: blur(10px); z-index: 1000; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        #loginOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; }
-        .login-card { background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .login-input { width: 100%; padding: 14px; border: 1px solid #e5e7eb; border-radius: 14px; font-family: 'Poppins'; text-align: center; box-sizing: border-box; margin-bottom: 15px; outline: none; }
-        .login-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 600; cursor: pointer; }
-        .couple-status { position: sticky; top: 10px; align-self: flex-end; background: var(--glass); backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); z-index: 100; margin: 5px 0 10px 0; padding: 8px 14px; transition: opacity 0.3s ease; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); 
+            background-attachment: fixed; 
+            color: var(--text); 
+            margin: 0; 
+            padding: 10px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            overflow-x: hidden; 
+        }
+
+        /* Buttons & UI Components */
+        .admin-login-btn { position: absolute; top: 15px; left: 15px; background: var(--glass); border: 1px solid rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 12px; font-size: 11px; font-weight: 500; cursor: pointer; backdrop-filter: blur(10px); z-index: 1000; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        #fab { display: none; position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--accent); color: white; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); z-index: 2000; align-items: center; justify-content: center; }
+        
+        /* Status Bar */
+        .couple-status { position: sticky; top: 10px; align-self: flex-end; background: var(--glass); backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); z-index: 100; margin: 5px 0 10px 0; padding: 8px 14px; }
         .couple-status .names { font-weight: 600; font-size: 13px; color: var(--accent); }
         .couple-status .monthsary { font-size: 10px; color: #6b7280; text-transform: uppercase; }
-        header { text-align: center; margin-bottom: 15px; width: 100%; }
-        h1 { font-weight: 600; margin: 5px 0 0 0; font-size: 1.8rem; }
-        .subtitle { color: #6b7280; font-weight: 300; font-size: 0.9rem; margin-top: 2px; }
-        #fab { display: none; position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--accent); color: white; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); z-index: 2000; align-items: center; justify-content: center; }
-        #uploadOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 4000; align-items: center; justify-content: center; padding: 20px; }
-        #uploadSection { display: block; background: white; border-radius: 24px; width: 100%; max-width: 450px; box-sizing: border-box; padding: 18px; }
-        .file-input-container { display: flex; flex-direction: column; align-items: center; padding: 15px; border: 2px dashed #e5e7eb; border-radius: 18px; margin-bottom: 15px; background: rgba(255, 255, 255, 0.4); cursor: pointer; }
-        input[type="file"] { display: none; }
-        .custom-file-upload { background: white; padding: 8px 16px; border-radius: 10px; font-size: 13px; border: 1px solid #d1d5db; }
-        textarea { width: 100%; height: 80px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; resize: none; box-sizing: border-box; font-family: 'Poppins', sans-serif; margin-bottom: 15px; }
-        .btn-upload { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+
+        /* Overlays & Cards */
+        #loginOverlay, #uploadOverlay, #actionModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; }
+        .login-card, .upload-card, .modal-content { background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        /* Inputs */
+        .login-input, textarea { width: 100%; padding: 14px; border: 1px solid #e5e7eb; border-radius: 14px; font-family: 'Poppins'; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .btn-upload, .login-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 600; cursor: pointer; }
+        
+        /* Gallery Grid */
         #gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 1200px; }
-        .memory-card { border-radius: 20px; overflow: hidden; transition: 0.3s; box-shadow: 0 0 25px rgba(0, 0, 0, 0.08); }
-        .memory-card img { width: 100%; height: auto; display: block; aspect-ratio: 1/1; object-fit: cover; }
-        .caption-text { font-size: 11px; line-height: 1.4; margin: 0; white-space: pre-wrap; word-wrap: break-word; }
-        @media (min-width: 1000px) { #gallery { grid-template-columns: repeat(3, 1fr); gap: 20px; } .caption-text { font-size: 15px; } .memory-card .content { padding: 15px !important; } }
-        .caption-text.collapsed { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .see-more-btn { background: none; border: none; padding: 0; margin-top: 4px; font-size: 9px; font-weight: 600; cursor: pointer; color: inherit; opacity: 0.8; }
-        #actionModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 320px; text-align: center; }
-        .modal-btn { width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 12px; font-family: 'Poppins'; cursor: pointer; }
+        .memory-card { border-radius: 20px; overflow: hidden; transition: 0.3s; box-shadow: 0 0 25px rgba(0, 0, 0, 0.08); background: white; }
+        .memory-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+        
+        /* Toast */
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1f2937; color: white; padding: 10px 20px; border-radius: 50px; z-index: 6000; transition: 0.3s; }
         #toast.show { transform: translateX(-50%) translateY(0); }
-        .color-picker-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 20px; }
-        .color-label { font-size: 13px; font-weight: 500; color: #6b7280; }
-        .modern-picker-container { position: relative; width: 60px; height: 32px; border-radius: 20px; border: 2px solid #e5e7eb; overflow: hidden; cursor: pointer; }
-        #cardColorPicker { position: absolute; top: -10px; left: -10px; width: 100px; height: 100px; cursor: pointer; opacity: 0; }
-        .color-preview-bar { width: 100%; height: 100%; pointer-events: none; }
-        #editCaptionInput { width: 100%; height: 100px; padding: 15px; border: 1px solid #eef0f2; border-radius: 18px; background: #fcfcfd; font-family: 'Poppins', sans-serif; font-size: 14px; resize: none; box-sizing: border-box; margin-bottom: 20px; outline: none; }
-        .save-changes-btn { background: #7371fc !important; color: white !important; font-weight: 500 !important; box-shadow: 0 4px 12px rgba(115, 113, 252, 0.3); }
-        .back-btn { background: #e9ecef !important; color: #1f2937 !important; font-weight: 500 !important; }
+
+        @media (max-width: 768px) { #gallery { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { #gallery { grid-template-columns: repeat(1, 1fr); } }
+
+        @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+.btn-upload:disabled {
+    animation: pulse 1.5s infinite;
+    cursor: not-allowed;
+    background: #9ca3af;
+}
     </style>
 </head>
 <body>
 
-<button class="admin-login-btn" id="lockBtn" onclick="toggleAuth()">Log in</button>
-<button id="fab" onclick="document.getElementById('uploadOverlay').style.display='flex'">+</button>
+    <button class="admin-login-btn" id="lockBtn" onclick="toggleAuth()">Log in</button>
+    <button id="fab" onclick="document.getElementById('uploadOverlay').style.display='flex'">+</button>
 
-<div id="loginOverlay" onclick="closeAuth()">
-    <div class="login-card" onclick="event.stopPropagation()">
-        <h2>Welcome Back</h2>
-        <p>Enter the code to unlock our gallery studio.</p>
-        <input type="password" id="adminPass" class="login-input" placeholder="Secret Code">
-        <button class="login-submit" onclick="verifyPass()">Enter Studio</button>
+    <div class="couple-status" id="coupleStatus">
+        <div class="names">Ivan & Eunice</div>
+        <div id="monthsaryDisplay" class="monthsary">Calculating...</div>
     </div>
-</div>
 
-<div class="couple-status" id="coupleStatus">
-    <div class="names">Ivan & Eunice</div>
-    <div id="monthsaryDisplay" class="monthsary">Calculating...</div>
-</div>
+    <header>
+        <h1>Our Moments</h1>
+        <p class="subtitle">Let's cherish our moments together baby.</p>
+    </header>
 
-<header>
-    <h1>Our Moments</h1>
-    <p class="subtitle">Let's cherish our moments together baby.</p>
-</header>
+    <div id="gallery"></div>
 
-<div id="uploadOverlay" onclick="this.style.display='none'">
-    <div class="upload-card" id="uploadSection" onclick="event.stopPropagation()">
-        <div class="file-input-container" onclick="document.getElementById('imageInput').click()">
-            <label class="custom-file-upload">Choose a Photo</label>
-            <input type="file" id="imageInput" accept="image/*" onchange="updateFileName()">
-            <p id="fileNameDisplay" style="font-size: 11px; color: #9ca3af; margin-top: 8px;">No file selected</p>
+    <div id="loginOverlay" onclick="closeAuth()">
+        <div class="login-card" onclick="event.stopPropagation()">
+            <h2>Welcome Back</h2>
+            <p>Enter the code to unlock our gallery studio.</p>
+            <input type="password" id="adminPass" class="login-input" placeholder="Secret Code">
+            <button class="login-submit" onclick="verifyPass()">Enter Studio</button>
         </div>
-        <textarea id="captionInput" placeholder="Write something sweet..."></textarea>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
-            <label style="font-size: 12px; color: #6b7280;">Card Color:</label>
-            <input type="color" id="postColorPicker" value="#ffffff">
-        </div>
-        <button class="btn-upload" id="finalUploadBtn" onclick="addMemory()">Post Moment</button>
     </div>
-</div>
 
-<div id="gallery"></div>
+    <div id="uploadOverlay" onclick="this.style.display='none'">
+        <div class="upload-card" id="uploadSection" onclick="event.stopPropagation()">
+            <div class="file-input-container" style="border: 2px dashed #eee; padding: 20px; border-radius: 15px; margin-bottom: 15px;" onclick="document.getElementById('imageInput').click()">
+                <label class="custom-file-upload">Choose a Photo</label>
+                <input type="file" id="imageInput" accept="image/*" onchange="updateFileName()">
+                <p id="fileNameDisplay" style="font-size: 11px; color: #9ca3af; margin-top: 8px;">No file selected</p>
+            </div>
+            <textarea id="captionInput" placeholder="Write something sweet..."></textarea>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 12px; color: #6b7280;">Card Color: </label>
+                <input type="color" id="postColorPicker" value="#ffffff">
+            </div>
+            <button class="btn-upload" onclick="addMemory()">Post Moment</button>
+        </div>
+    </div>
 
-<div id="toast">Message here</div>
+    <div id="actionModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="menuView">
+                <button class="modal-btn" onclick="showEditView()">Edit Caption</button>
+                <button class="modal-btn" style="color: red;" onclick="showConfirmDelete()">Delete Moment</button>
+            </div>
+            <div id="editView" style="display:none;">
+                <textarea id="editCaptionInput"></textarea>
+                <input type="color" id="cardColorPicker">
+                <button class="modal-btn" onclick="triggerEdit()">Save Changes</button>
+                <button class="modal-btn" onclick="showMenuView()">Back</button>
+            </div>
+            <div id="deleteView" style="display:none;">
+                <p>Are you sure?</p>
+                <button class="modal-btn" style="color: red;" onclick="triggerDelete()">Yes, Delete</button>
+                <button class="modal-btn" onclick="showMenuView()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-    // --- GITHUB CONFIGURATION ---
-    const config = {
-        repo: "velcss/ourmemories-", 
-        jsonPath: "memories.json"
-    };
+    <div id="toast">Message here</div>
 
-    let isAdmin = false;
-    let memories = [];
-    let currentActiveId = null;
+    <script>
+        // --- CONFIGURATION ---
+        const config = {
+            repo: "velcss/ourmemories-", 
+            jsonPath: "memories.json"
+        };
 
-    const gallery = document.getElementById('gallery');
-    const modal = document.getElementById('actionModal');
-    const loginOverlay = document.getElementById('loginOverlay');
-    const fab = document.getElementById('fab');
-    const coupleStatus = document.getElementById('coupleStatus');
+        let isAdmin = false;
+        let memories = [];
+        let currentActiveId = null;
 
-    // --- INITIALIZATION ---
-    window.onload = async () => {
-        // Check if a token is already saved
-        const savedToken = localStorage.getItem('gh_token');
-        if (savedToken) {
-            applyLoginState(true);
+        const gallery = document.getElementById('gallery');
+        const modal = document.getElementById('actionModal');
+
+        // --- INITIALIZATION ---
+        window.onload = async () => {
+            const savedToken = localStorage.getItem('gh_token');
+            if (savedToken) applyLoginState(true);
+            updateMonthsaryCountdown();
+            await loadMemories();
+        };
+
+        async function loadMemories() {
+            try {
+                const resp = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/${config.jsonPath}?t=${Date.now()}`);
+                if (resp.ok) {
+                    memories = await resp.json();
+                    refreshGallery();
+                }
+            } catch (e) { showToast("Database error ❌"); }
         }
-        
-        updateMonthsaryCountdown();
-        await loadMemories();
-    };
 
-    // Load data from GitHub Cloud
-    async function loadMemories() {
-        try {
-            const resp = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/${config.jsonPath}?t=${Date.now()}`);
-            if (resp.ok) {
-                memories = await resp.json();
-                refreshGallery();
-            }
-        } catch (e) {
-            showToast("Database error ❌");
+        // --- AUTHENTICATION ---
+        function verifyPass() {
+            const tokenInput = document.getElementById('adminPass').value.trim();
+            if (tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_")) {
+                localStorage.setItem('gh_token', tokenInput);
+                applyLoginState(true);
+                location.reload(); 
+            } else { showToast("Invalid Token! ❌"); }
         }
-    }
 
-    // --- AUTHENTICATION (Using Token as Password) ---
-    function verifyPass() {
-        const tokenInput = document.getElementById('adminPass').value.trim();
-        
-        // Validates if it looks like a GitHub token
-        if (tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_")) {
-            localStorage.setItem('gh_token', tokenInput);
-            applyLoginState(true);
-            closeAuth();
-            showToast("Studio Unlocked! ❤️");
-            location.reload(); 
-        } else {
-            showToast("Invalid Token! ❌");
+        function applyLoginState(loggedIn) {
+            isAdmin = loggedIn;
+            document.getElementById('fab').style.display = loggedIn ? 'flex' : 'none';
+            document.getElementById('lockBtn').innerText = loggedIn ? "Log out" : "Log in";
+            if (!loggedIn) localStorage.removeItem('gh_token');
         }
-    }
 
-    function applyLoginState(loggedIn) {
-        isAdmin = loggedIn;
-        const lockBtn = document.getElementById('lockBtn');
-        if (loggedIn) {
-            fab.style.display = 'flex';
-            lockBtn.innerText = "Log out";
-        } else {
-            fab.style.display = 'none';
-            lockBtn.innerText = "Log in";
-            localStorage.removeItem('gh_token');
+        function toggleAuth() {
+            if (isAdmin) { applyLoginState(false); location.reload(); }
+            else { document.getElementById('loginOverlay').style.display = 'flex'; }
         }
-    }
 
-    // --- GITHUB API HELPERS ---
-    async function githubFetch(path, message, content, sha = null) {
-        const token = localStorage.getItem('gh_token');
-        const body = { message, content };
-        if (sha) body.sha = sha;
+        function closeAuth() { document.getElementById('loginOverlay').style.display = 'none'; }
 
-        const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
-            method: "PUT",
-            headers: { 
-                "Authorization": `token ${token}`, 
-                "Content-Type": "application/json" 
-            },
-            body: JSON.stringify(body)
-        });
+        // --- GITHUB API HELPERS ---
+        async function githubFetch(path, message, content, sha = null) {
+            const token = localStorage.getItem('gh_token');
+            const body = { message, content };
+            if (sha) body.sha = sha;
 
-        if (resp.status === 401) {
-            localStorage.removeItem('gh_token');
-            alert("Session expired. Please log in again.");
-            location.reload();
+            return fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
         }
-        return resp;
-    }
 
-    async function getFileDetails(path) {
-        const token = localStorage.getItem('gh_token');
-        const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
-            headers: { "Authorization": `token ${token}` }
-        });
-        return resp.ok ? await resp.json() : null;
-    }
-
-    // --- CORE ACTIONS ---
-  async function addMemory() {
-    const file = document.getElementById('imageInput').files[0];
-    const caption = document.getElementById('captionInput').value.trim();
-    const bgColor = document.getElementById('postColorPicker').value;
-    const btn = document.querySelector('.btn-upload');
-
-    if (!file) return showToast("Pick a photo! 📸");
-    
-    btn.disabled = true;
-    btn.innerText = "Processing...";
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-        try {
-            const base64 = reader.result.split(',')[1];
-            const fileName = `images/img_${Date.now()}.jpg`;
-            
-            // START BOTH TASKS AT ONCE
-            showToast("Sending to cloud... ☁️");
-            
-            const imageUploadPromise = githubFetch(fileName, "Upload Photo", base64);
-            const jsonFilePromise = getFileDetails(config.jsonPath);
-
-            // Wait for both to complete simultaneously
-            const [imgResp, jsonFile] = await Promise.all([imageUploadPromise, jsonFilePromise]);
-
-            if (!imgResp.ok) throw new Error("Image upload failed");
-
-            // Prepare JSON Entry
-            const newEntry = {
-                id: Date.now(),
-                image: `https://api.github.com/repos/${config.repo}/contents/${fileName}`,
-                caption: caption,
-                bgColor: bgColor,
-                timestamp: Date.now()
-            };
-
-            memories.push(newEntry);
-            
-            // Final update to JSON
-            await githubFetch(
-                config.jsonPath, 
-                "Add Memory", 
-                btoa(unescape(encodeURIComponent(JSON.stringify(memories, null, 2)))), 
-                jsonFile?.sha
-            );
-
-            showToast("Posted! ✨");
-            location.reload();
-        } catch (e) {
-            console.error(e);
-            showToast("Upload failed ❌");
-            btn.disabled = false;
-            btn.innerText = "Post Moment";
-        }
-    };
-}
-
-    async function triggerDelete() {
-        if(!confirm("Are you sure you want to delete this?")) return;
-        
-        const jsonFile = await getFileDetails(config.jsonPath);
-        memories = memories.filter(m => m.id !== currentActiveId);
-        
-        await githubFetch(config.jsonPath, "Delete Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
-        showToast("Deleted! 🗑️");
-        location.reload();
-    }
-
-    async function triggerEdit() {
-        const newCaption = document.getElementById('editCaptionInput').value.trim();
-        const newColor = document.getElementById('cardColorPicker').value;
-        
-        const idx = memories.findIndex(m => m.id === currentActiveId);
-        memories[idx].caption = newCaption;
-        memories[idx].bgColor = newColor;
-
-        const jsonFile = await getFileDetails(config.jsonPath);
-        await githubFetch(config.jsonPath, "Edit Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
-        
-        showToast("Updated! ✏️");
-        location.reload();
-    }
-
-    // --- UI HELPERS ---
-    function refreshGallery() {
-        gallery.innerHTML = "";
-        [...memories].reverse().forEach(m => renderCard(m.id, m.image, m.caption, m.bgColor, m.timestamp));
-    }
-
-   async function renderCard(id, image, caption, bgColor, timestamp) {
-    const div = document.createElement('div');
-    const textColor = getContrastYIQ(bgColor || "#ffffff");
-    div.className = `memory-card`;
-    div.id = `mem-${id}`;
-    div.style.backgroundColor = bgColor || "#ffffff";
-    div.style.color = textColor;
-    div.style.cursor = isAdmin ? 'pointer' : 'default';
-
-    // 1. Create the Image Element
-    const imgEl = document.createElement('img');
-    imgEl.alt = "Loading...";
-    imgEl.style.minHeight = "200px"; 
-    imgEl.style.background = "#eee";
-
-    // 2. Fetch the actual image data using your Token
-    const token = localStorage.getItem('gh_token');
-    if (token) {
-        try {
-            const response = await fetch(image, {
+        async function getFileDetails(path) {
+            const token = localStorage.getItem('gh_token');
+            const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
                 headers: { "Authorization": `token ${token}` }
             });
-            const data = await response.json();
-            // Convert GitHub's base64 data to a viewable image
-            imgEl.src = `data:image/jpeg;base64,${data.content}`;
-        } catch (e) {
-            console.error("Failed to load image:", e);
-            imgEl.alt = "Failed to load image ❌";
+            return resp.ok ? await resp.json() : null;
         }
-    }
 
-       async function compressImage(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 1200; // Good balance for web
-                let width = img.width;
-                let height = img.height;
+        // --- CORE ACTIONS ---
+        async function addMemory() {
+            const file = document.getElementById('imageInput').files[0];
+            const caption = document.getElementById('captionInput').value.trim();
+            const bgColor = document.getElementById('postColorPicker').value;
+            const btn = document.querySelector('.btn-upload');
 
-                if (width > MAX_WIDTH) {
-                    height *= MAX_WIDTH / width;
-                    width = MAX_WIDTH;
-                }
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                // 0.7 quality is indistinguishable on mobile but 1/5th the size
-                resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
-            };
-        };
-    });
-}
+            if (!file) return showToast("Pick a photo! 📸");
+            btn.disabled = true; btn.innerText = "Processing...";
 
-    const hasCaption = caption && caption.trim().length > 0;
-    const isLong = hasCaption && caption.length > 50;
-    
-    div.onclick = () => { if(isAdmin) openActionMenu(id); };
-    div.innerHTML = `
-        <div class="content" style="padding: 8px;">
-            ${hasCaption ? `<p class="caption-text ${isLong ? 'collapsed' : ''}" id="cap-${id}">${caption}</p>` : ''}
-            ${isLong ? `<button class="see-more-btn" onclick="toggleCaption(event, ${id})">See more</button>` : ""}
-            <p class="time-ago" style="font-size: 8px; opacity: 0.7; text-align: right; margin-top: 5px;">
-                ${formatTimeAgo(timestamp)}
-            </p>
-        </div>
-    `;
-    
-    // 3. Put the image at the top of the card
-    div.prepend(imgEl);
-    gallery.appendChild(div);
-}
+            try {
+                const base64 = await compressImage(file);
+                const fileName = `images/img_${Date.now()}.jpg`;
+                showToast("Sending to cloud... ☁️");
 
-    // --- PRE-EXISTING UTILITIES ---
-    function toggleAuth() {
-        if (isAdmin) { applyLoginState(false); location.reload(); }
-        else { loginOverlay.style.display = 'flex'; document.getElementById('adminPass').focus(); }
-    }
-    function closeAuth() { loginOverlay.style.display = 'none'; }
-    function closeModal() { modal.style.display = 'none'; }
-    function openActionMenu(id) { 
-        currentActiveId = id; 
-        document.getElementById('menuView').style.display = 'block';
-        document.getElementById('editView').style.display = 'none';
-        document.getElementById('deleteView').style.display = 'none';
-        modal.style.display = 'flex'; 
-    }
-    function showEditView() {
-        const m = memories.find(m => m.id === currentActiveId);
-        document.getElementById('editCaptionInput').value = m.caption || "";
-        document.getElementById('cardColorPicker').value = m.bgColor || "#ffffff";
-        updateColorIndicator(m.bgColor || "#ffffff");
-        document.getElementById('menuView').style.display = 'none'; 
-        document.getElementById('editView').style.display = 'block';
-    }
-    function showMenuView() { document.getElementById('editView').style.display = 'none'; document.getElementById('deleteView').style.display = 'none'; document.getElementById('menuView').style.display = 'block'; }
-    function showConfirmDelete() { document.getElementById('menuView').style.display = 'none'; document.getElementById('deleteView').style.display = 'block'; }
-    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
-    function updateMonthsaryCountdown() { const display = document.getElementById('monthsaryDisplay'); const now = new Date(); let target = new Date(now.getFullYear(), now.getMonth(), 8); if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; } if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8); display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`; }
-    function getContrastYIQ(hexcolor){ hexcolor = hexcolor.replace("#", ""); var r = parseInt(hexcolor.substr(0,2),16); var g = parseInt(hexcolor.substr(2,2),16); var b = parseInt(hexcolor.substr(4,2),16); var yiq = ((r*299)+(g*587)+(b*114))/1000; return (yiq >= 128) ? '#1f2937' : '#ffffff'; }
-    function formatTimeAgo(t) { const s = Math.floor((new Date() - new Date(parseInt(t))) / 1000); if (s < 60) return 'now'; const m = Math.floor(s / 60); if (m < 60) return m + 'm'; const h = Math.floor(m / 60); if (h < 24) return h + 'h'; return new Date(parseInt(t)).toLocaleDateString(); }
-    function toggleCaption(e, id) { e.stopPropagation(); const cap = document.getElementById(`cap-${id}`); cap.classList.toggle('collapsed'); e.target.innerText = cap.classList.contains('collapsed') ? "See more" : "See less"; }
-    function updateFileName() { const f = document.getElementById('imageInput').files[0]; if (f) document.getElementById('fileNameDisplay').textContent = "Selected: " + f.name; }
-    function updateColorIndicator(val) { document.getElementById('colorIndicator').style.backgroundColor = val; }
-    document.getElementById('adminPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') verifyPass(); });
-</script>
+                const [imgResp, jsonFile] = await Promise.all([
+                    githubFetch(fileName, "Upload Photo", base64),
+                    getFileDetails(config.jsonPath)
+                ]);
+
+                const newEntry = { id: Date.now(), image: `https://api.github.com/repos/${config.repo}/contents/${fileName}`, caption, bgColor, timestamp: Date.now() };
+                memories.push(newEntry);
+
+                await githubFetch(config.jsonPath, "Add Memory", btoa(unescape(encodeURIComponent(JSON.stringify(memories, null, 2)))), jsonFile?.sha);
+                location.reload();
+            } catch (e) { showToast("Upload failed ❌"); btn.disabled = false; }
+        }
+
+        async function triggerDelete() {
+            const jsonFile = await getFileDetails(config.jsonPath);
+            memories = memories.filter(m => m.id !== currentActiveId);
+            await githubFetch(config.jsonPath, "Delete Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
+            location.reload();
+        }
+
+        async function triggerEdit() {
+            const idx = memories.findIndex(m => m.id === currentActiveId);
+            memories[idx].caption = document.getElementById('editCaptionInput').value;
+            memories[idx].bgColor = document.getElementById('cardColorPicker').value;
+            const jsonFile = await getFileDetails(config.jsonPath);
+            await githubFetch(config.jsonPath, "Edit Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
+            location.reload();
+        }
+
+        // --- UI HELPERS ---
+        function refreshGallery() {
+            gallery.innerHTML = "";
+            const sorted = [...memories].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            sorted.forEach(m => renderCard(m));
+        }
+
+        async function renderCard(m) {
+            const div = document.createElement('div');
+            div.className = 'memory-card';
+            div.style.backgroundColor = m.bgColor || "#ffffff";
+            div.style.color = getContrastYIQ(m.bgColor || "#ffffff");
+            div.onclick = () => { if(isAdmin) openActionMenu(m.id); };
+
+            const imgEl = document.createElement('img');
+            imgEl.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; // placeholder
+
+            const token = localStorage.getItem('gh_token');
+            if (token) {
+                fetch(m.image, { headers: { "Authorization": `token ${token}` }})
+                    .then(r => r.json()).then(data => imgEl.src = `data:image/jpeg;base64,${data.content}`);
+            }
+
+            div.innerHTML = `<div class="content" style="padding:10px;"><p>${m.caption || ''}</p><small style="opacity:0.6">${formatTimeAgo(m.timestamp)}</small></div>`;
+            div.prepend(imgEl);
+            gallery.appendChild(div);
+        }
+
+        // --- UTILITIES ---
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 1200;
+                        let w = img.width, h = img.height;
+                        if (w > MAX_WIDTH) { h *= MAX_WIDTH / w; w = MAX_WIDTH; }
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+                    };
+                };
+            });
+        }
+
+        function formatTimeAgo(t) {
+            const s = Math.floor((new Date() - new Date(parseInt(t))) / 1000);
+            if (s < 60) return 'Just now';
+            if (s < 3600) return Math.floor(s/60) + 'm ago';
+            if (s < 86400) return Math.floor(s/3600) + 'h ago';
+            return new Date(parseInt(t)).toLocaleDateString();
+        }
+
+        function getContrastYIQ(hex){
+            hex = hex.replace("#", "");
+            const r = parseInt(hex.substr(0,2),16), g = parseInt(hex.substr(2,2),16), b = parseInt(hex.substr(4,2),16);
+            return ((r*299)+(g*587)+(b*114))/1000 >= 128 ? '#1f2937' : '#ffffff';
+        }
+
+        function openActionMenu(id) { currentActiveId = id; document.getElementById('actionModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('actionModal').style.display = 'none'; }
+        function showEditView() { document.getElementById('menuView').style.display = 'none'; document.getElementById('editView').style.display = 'block'; }
+        function showMenuView() { document.getElementById('editView').style.display = 'none'; document.getElementById('deleteView').style.display = 'none'; document.getElementById('menuView').style.display = 'block'; }
+        function showConfirmDelete() { document.getElementById('menuView').style.display = 'none'; document.getElementById('deleteView').style.display = 'block'; }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        function updateFileName() { const f = document.getElementById('imageInput').files[0]; if(f) document.getElementById('fileNameDisplay').innerText = f.name; }
+        function updateMonthsaryCountdown() {
+            const display = document.getElementById('monthsaryDisplay');
+            const now = new Date();
+            let target = new Date(now.getFullYear(), now.getMonth(), 8);
+            if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; }
+            if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8);
+            display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`;
+        }
+    </script>
 </body>
-
 </html>
-
-
-
-
-
-
