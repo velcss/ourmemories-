@@ -95,154 +95,245 @@
 <div id="toast">Message here</div>
 
 <script>
-    // --- GITHUB SERVER CONFIG ---
+    // --- GITHUB CONFIGURATION ---
     const config = {
-        token: "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",
-        repo:"velcss/ourmemories-", // <--- CHANGE THIS
+        repo: "velcss/ourmemories-", 
         jsonPath: "memories.json"
     };
 
-    let isAdmin = false; 
-    const gallery = document.getElementById('gallery');
-    const fab = document.getElementById('fab');
+    let isAdmin = false;
     let memories = [];
+    let currentActiveId = null;
 
-    // --- FETCH DATA FROM GITHUB ON LOAD ---
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('actionModal');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const fab = document.getElementById('fab');
+    const coupleStatus = document.getElementById('coupleStatus');
+
+    // --- INITIALIZATION ---
     window.onload = async () => {
-        if (localStorage.getItem('adminSession') === 'true') applyLoginState(true);
+        // Check if a token is already saved
+        const savedToken = localStorage.getItem('gh_token');
+        if (savedToken) {
+            applyLoginState(true);
+        }
+        
         updateMonthsaryCountdown();
         await loadMemories();
     };
 
+    // Load data from GitHub Cloud
     async function loadMemories() {
         try {
             const resp = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/${config.jsonPath}?t=${Date.now()}`);
             if (resp.ok) {
                 memories = await resp.json();
-                renderGallery();
+                refreshGallery();
             }
-        } catch (e) { console.log("Starting fresh..."); }
-    }
-
-    function renderGallery() {
-        gallery.innerHTML = "";
-        [...memories].reverse().forEach(m => renderCard(m.id, m.image, m.caption, m.bgColor, m.timestamp));
-    }
-
-    // --- UPLOAD TO GITHUB ---
-    async function addMemory() {
-        const file = document.getElementById('imageInput').files[0];
-        const caption = document.getElementById('captionInput').value.trim();
-        const bgColor = document.getElementById('postColorPicker').value;
-        const btn = document.getElementById('finalUploadBtn');
-
-        if (!file) return showToast("Pick a photo! 📸");
-        
-        btn.disabled = true;
-        btn.innerText = "Uploading to Cloud...";
-
-        try {
-            const base64 = await toBase64(file);
-            const fileName = `img_${Date.now()}.jpg`;
-            
-            // 1. Upload image file to GitHub
-            await githubFetch(`images/${fileName}`, "Add image", base64.split(',')[1]);
-
-            // 2. Update JSON data
-            const newMemory = {
-                id: Date.now(),
-                image: `https://raw.githubusercontent.com/${config.repo}/main/images/${fileName}`,
-                caption: caption,
-                bgColor: bgColor,
-                timestamp: Date.now()
-            };
-
-            memories.push(newMemory);
-            const currentJson = await getFileDetails(config.jsonPath);
-            await githubFetch(config.jsonPath, "Update memories list", btoa(JSON.stringify(memories, null, 2)), currentJson?.sha);
-
-            showToast("Posted to Gallery! ✨");
-            document.getElementById('uploadOverlay').style.display='none';
-            renderGallery();
         } catch (e) {
-            showToast("Error uploading ❌");
-            console.error(e);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Post Moment";
+            showToast("Database error ❌");
         }
     }
 
+    // --- AUTHENTICATION (Using Token as Password) ---
+    function verifyPass() {
+        const tokenInput = document.getElementById('adminPass').value.trim();
+        
+        // Validates if it looks like a GitHub token
+        if (tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_")) {
+            localStorage.setItem('gh_token', tokenInput);
+            applyLoginState(true);
+            closeAuth();
+            showToast("Studio Unlocked! ❤️");
+            location.reload(); 
+        } else {
+            showToast("Invalid Token! ❌");
+        }
+    }
+
+    function applyLoginState(loggedIn) {
+        isAdmin = loggedIn;
+        const lockBtn = document.getElementById('lockBtn');
+        if (loggedIn) {
+            fab.style.display = 'flex';
+            lockBtn.innerText = "Log out";
+        } else {
+            fab.style.display = 'none';
+            lockBtn.innerText = "Log in";
+            localStorage.removeItem('gh_token');
+        }
+    }
+
+    // --- GITHUB API HELPERS ---
     async function githubFetch(path, message, content, sha = null) {
+        const token = localStorage.getItem('gh_token');
         const body = { message, content };
         if (sha) body.sha = sha;
 
-        return fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+        const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
             method: "PUT",
-            headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
+            headers: { 
+                "Authorization": `token ${token}`, 
+                "Content-Type": "application/json" 
+            },
             body: JSON.stringify(body)
         });
+
+        if (resp.status === 401) {
+            localStorage.removeItem('gh_token');
+            alert("Session expired. Please log in again.");
+            location.reload();
+        }
+        return resp;
     }
 
     async function getFileDetails(path) {
+        const token = localStorage.getItem('gh_token');
         const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
-            headers: { "Authorization": `token ${config.token}` }
+            headers: { "Authorization": `token ${token}` }
         });
         return resp.ok ? await resp.json() : null;
     }
 
-    const toBase64 = file => new Promise((res, rej) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => res(reader.result);
-        reader.onerror = rej;
-    });
+    // --- CORE ACTIONS ---
+    async function addMemory() {
+        const file = document.getElementById('imageInput').files[0];
+        const caption = document.getElementById('captionInput').value.trim();
+        const bgColor = document.getElementById('postColorPicker').value;
+        const btn = document.querySelector('.btn-upload');
 
-    // --- KEEPING YOUR ORIGINAL UI LOGIC ---
-    function applyLoginState(loggedIn) {
-        isAdmin = loggedIn;
-        document.getElementById('lockBtn').innerText = loggedIn ? "Log out" : "Log in";
-        fab.style.display = loggedIn ? 'flex' : 'none';
-        if (loggedIn) localStorage.setItem('adminSession', 'true');
-        else localStorage.removeItem('adminSession');
+        if (!file) return showToast("Pick a photo! 📸");
+        
+        btn.disabled = true;
+        btn.innerText = "Uploading...";
+
+        try {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64 = reader.result.split(',')[1];
+                const fileName = `images/img_${Date.now()}.jpg`;
+                
+                // 1. Upload Image to GitHub
+                await githubFetch(fileName, "Upload Photo", base64);
+
+                // 2. Prepare JSON Entry
+                const newEntry = {
+                    id: Date.now(),
+                    image: `https://raw.githubusercontent.com/${config.repo}/main/${fileName}`,
+                    caption: caption,
+                    bgColor: bgColor,
+                    timestamp: Date.now()
+                };
+
+                // 3. Update JSON File on GitHub
+                memories.push(newEntry);
+                const jsonFile = await getFileDetails(config.jsonPath);
+                await githubFetch(config.jsonPath, "Add Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
+
+                showToast("Posted! ✨");
+                location.reload();
+            };
+        } catch (e) {
+            showToast("Upload failed ❌");
+        }
     }
 
-    function verifyPass() {
-        if (document.getElementById('adminPass').value === "682025") {
-            applyLoginState(true);
-            document.getElementById('loginOverlay').style.display='none';
-            showToast("Welcome Back! ❤️");
-        } else showToast("Incorrect Code ❌");
+    async function triggerDelete() {
+        if(!confirm("Are you sure you want to delete this?")) return;
+        
+        const jsonFile = await getFileDetails(config.jsonPath);
+        memories = memories.filter(m => m.id !== currentActiveId);
+        
+        await githubFetch(config.jsonPath, "Delete Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
+        showToast("Deleted! 🗑️");
+        location.reload();
     }
 
-    function toggleAuth() { isAdmin ? applyLoginState(false) : document.getElementById('loginOverlay').style.display = 'flex'; }
-    function closeAuth() { document.getElementById('loginOverlay').style.display = 'none'; }
-    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-    
+    async function triggerEdit() {
+        const newCaption = document.getElementById('editCaptionInput').value.trim();
+        const newColor = document.getElementById('cardColorPicker').value;
+        
+        const idx = memories.findIndex(m => m.id === currentActiveId);
+        memories[idx].caption = newCaption;
+        memories[idx].bgColor = newColor;
+
+        const jsonFile = await getFileDetails(config.jsonPath);
+        await githubFetch(config.jsonPath, "Edit Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
+        
+        showToast("Updated! ✏️");
+        location.reload();
+    }
+
+    // --- UI HELPERS ---
+    function refreshGallery() {
+        gallery.innerHTML = "";
+        [...memories].reverse().forEach(m => renderCard(m.id, m.image, m.caption, m.bgColor, m.timestamp));
+    }
+
     function renderCard(id, image, caption, bgColor, timestamp) {
         const div = document.createElement('div');
+        const textColor = getContrastYIQ(bgColor || "#ffffff");
         div.className = `memory-card`;
-        div.style.backgroundColor = bgColor;
-        div.innerHTML = `<img src="${image}"><div class="content" style="padding: 8px;"><p class="caption-text">${caption}</p></div>`;
-        gallery.prepend(div);
+        div.id = `mem-${id}`;
+        div.style.backgroundColor = bgColor || "#ffffff";
+        div.style.color = textColor;
+        div.style.cursor = isAdmin ? 'pointer' : 'default';
+        
+        const hasCaption = caption && caption.trim().length > 0;
+        const isLong = hasCaption && caption.length > 50;
+        
+        div.onclick = () => { if(isAdmin) openActionMenu(id); };
+        div.innerHTML = `
+            <img src="${image}">
+            <div class="content" style="padding: 8px;">
+                ${hasCaption ? `<p class="caption-text ${isLong ? 'collapsed' : ''}" id="cap-${id}">${caption}</p>` : ''}
+                ${isLong ? `<button class="see-more-btn" onclick="toggleCaption(event, ${id})">See more</button>` : ""}
+                <p class="time-ago" data-time="${timestamp}" style="font-size: 8px; opacity: 0.7; text-align: right; margin-top: 5px;">
+                    ${formatTimeAgo(timestamp)}
+                </p>
+            </div>
+        `;
+        gallery.appendChild(div);
     }
 
-    function updateMonthsaryCountdown() {
-        const display = document.getElementById('monthsaryDisplay');
-        const now = new Date();
-        let target = new Date(now.getFullYear(), now.getMonth(), 8);
-        if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; }
-        if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8);
-        display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`;
+    // --- PRE-EXISTING UTILITIES ---
+    function toggleAuth() {
+        if (isAdmin) { applyLoginState(false); location.reload(); }
+        else { loginOverlay.style.display = 'flex'; document.getElementById('adminPass').focus(); }
     }
-    
-    function updateFileName() {
-        const f = document.getElementById('imageInput').files[0];
-        if (f) document.getElementById('fileNameDisplay').textContent = "Selected: " + f.name;
+    function closeAuth() { loginOverlay.style.display = 'none'; }
+    function closeModal() { modal.style.display = 'none'; }
+    function openActionMenu(id) { 
+        currentActiveId = id; 
+        document.getElementById('menuView').style.display = 'block';
+        document.getElementById('editView').style.display = 'none';
+        document.getElementById('deleteView').style.display = 'none';
+        modal.style.display = 'flex'; 
     }
+    function showEditView() {
+        const m = memories.find(m => m.id === currentActiveId);
+        document.getElementById('editCaptionInput').value = m.caption || "";
+        document.getElementById('cardColorPicker').value = m.bgColor || "#ffffff";
+        updateColorIndicator(m.bgColor || "#ffffff");
+        document.getElementById('menuView').style.display = 'none'; 
+        document.getElementById('editView').style.display = 'block';
+    }
+    function showMenuView() { document.getElementById('editView').style.display = 'none'; document.getElementById('deleteView').style.display = 'none'; document.getElementById('menuView').style.display = 'block'; }
+    function showConfirmDelete() { document.getElementById('menuView').style.display = 'none'; document.getElementById('deleteView').style.display = 'block'; }
+    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+    function updateMonthsaryCountdown() { const display = document.getElementById('monthsaryDisplay'); const now = new Date(); let target = new Date(now.getFullYear(), now.getMonth(), 8); if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; } if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8); display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`; }
+    function getContrastYIQ(hexcolor){ hexcolor = hexcolor.replace("#", ""); var r = parseInt(hexcolor.substr(0,2),16); var g = parseInt(hexcolor.substr(2,2),16); var b = parseInt(hexcolor.substr(4,2),16); var yiq = ((r*299)+(g*587)+(b*114))/1000; return (yiq >= 128) ? '#1f2937' : '#ffffff'; }
+    function formatTimeAgo(t) { const s = Math.floor((new Date() - new Date(parseInt(t))) / 1000); if (s < 60) return 'now'; const m = Math.floor(s / 60); if (m < 60) return m + 'm'; const h = Math.floor(m / 60); if (h < 24) return h + 'h'; return new Date(parseInt(t)).toLocaleDateString(); }
+    function toggleCaption(e, id) { e.stopPropagation(); const cap = document.getElementById(`cap-${id}`); cap.classList.toggle('collapsed'); e.target.innerText = cap.classList.contains('collapsed') ? "See more" : "See less"; }
+    function updateFileName() { const f = document.getElementById('imageInput').files[0]; if (f) document.getElementById('fileNameDisplay').textContent = "Selected: " + f.name; }
+    function updateColorIndicator(val) { document.getElementById('colorIndicator').style.backgroundColor = val; }
+    document.getElementById('adminPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') verifyPass(); });
 </script>
 </body>
 
 </html>
+
 
 
