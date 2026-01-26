@@ -221,7 +221,7 @@
                 // 2. Prepare JSON Entry
                 const newEntry = {
                     id: Date.now(),
-                    image: `https://raw.githubusercontent.com/${config.repo}/main/${fileName}`,
+                    image: `https://api.github.com/repos/${config.repo}/contents/${fileName}`,
                     caption: caption,
                     bgColor: bgColor,
                     timestamp: Date.now()
@@ -272,31 +272,40 @@
         [...memories].reverse().forEach(m => renderCard(m.id, m.image, m.caption, m.bgColor, m.timestamp));
     }
 
-    function renderCard(id, image, caption, bgColor, timestamp) {
-        const div = document.createElement('div');
-        const textColor = getContrastYIQ(bgColor || "#ffffff");
-        div.className = `memory-card`;
-        div.id = `mem-${id}`;
-        div.style.backgroundColor = bgColor || "#ffffff";
-        div.style.color = textColor;
-        div.style.cursor = isAdmin ? 'pointer' : 'default';
-        
-        const hasCaption = caption && caption.trim().length > 0;
-        const isLong = hasCaption && caption.length > 50;
-        
-        div.onclick = () => { if(isAdmin) openActionMenu(id); };
-        div.innerHTML = `
-            <img src="${image}">
-            <div class="content" style="padding: 8px;">
-                ${hasCaption ? `<p class="caption-text ${isLong ? 'collapsed' : ''}" id="cap-${id}">${caption}</p>` : ''}
-                ${isLong ? `<button class="see-more-btn" onclick="toggleCaption(event, ${id})">See more</button>` : ""}
-                <p class="time-ago" data-time="${timestamp}" style="font-size: 8px; opacity: 0.7; text-align: right; margin-top: 5px;">
-                    ${formatTimeAgo(timestamp)}
-                </p>
-            </div>
-        `;
-        gallery.appendChild(div);
+   async function renderCard(id, image, caption, bgColor, timestamp) {
+    const div = document.createElement('div');
+    const textColor = getContrastYIQ(bgColor || "#ffffff");
+    div.className = `memory-card`;
+    div.id = `mem-${id}`;
+    div.style.backgroundColor = bgColor || "#ffffff";
+    div.style.color = textColor;
+    
+    // Create image element
+    const imgEl = document.createElement('img');
+    imgEl.src = "https://placeholder.com/loading.gif"; // Temporary loader
+    
+    // Fetch the image data with the token
+    const token = localStorage.getItem('gh_token');
+    try {
+        const response = await fetch(image, {
+            headers: { "Authorization": `token ${token}` }
+        });
+        const data = await response.json();
+        imgEl.src = `data:image/jpeg;base64,${data.content}`;
+    } catch (e) {
+        console.error("Image load failed", e);
     }
+
+    div.onclick = () => { if(isAdmin) openActionMenu(id); };
+    div.innerHTML = `
+        <div class="content" style="padding: 8px;">
+            ${caption ? `<p class="caption-text">${caption}</p>` : ''}
+            <p class="time-ago" style="font-size: 8px; opacity: 0.7; text-align: right;">${formatTimeAgo(timestamp)}</p>
+        </div>
+    `;
+    div.prepend(imgEl); // Add the actual image
+    gallery.appendChild(div);
+}
 
     // --- PRE-EXISTING UTILITIES ---
     function toggleAuth() {
@@ -334,6 +343,7 @@
 </body>
 
 </html>
+
 
 
 
