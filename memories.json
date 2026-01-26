@@ -16,15 +16,8 @@
   {
     "id": 1769430380352,
     "image": "https://api.github.com/repos/velcss/ourmemories-/contents/images/img_1769430379355.jpg",
-    "caption": "",
-    "bgColor": "#4cc860",
+    "caption": "Furina baby",
+    "bgColor": "#3684d9",
     "timestamp": 1769430380352
-  },
-  {
-    "id": 1769431039493,
-    "image": "https://api.github.com/repos/velcss/ourmemories-/contents/images/img_1769431037262.jpg",
-    "caption": "",
-    "bgColor": "#6a4848",
-    "timestamp": 1769431039493
   }
 ]
