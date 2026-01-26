@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ivan ❤️ Eunice | Our Moments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* CSS stays exactly the same as your provided code */
+        :root { --bg: #f8f9fa; --accent: #6366f1; --glass: rgba(255, 255, 255, 0.85); --text: #1f2937; --danger: #ef4444; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); background-attachment: fixed; color: var(--text); margin: 0; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+        .admin-login-btn { font-family: 'Poppins', sans-serif; position: absolute; top: 15px; left: 15px; background: var(--glass); border: 1px solid rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 12px; font-size: 11px; font-weight: 500; cursor: pointer; backdrop-filter: blur(10px); z-index: 1000; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        #loginOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; }
+        .login-card { background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .login-input { width: 100%; padding: 14px; border: 1px solid #e5e7eb; border-radius: 14px; font-family: 'Poppins'; text-align: center; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .login-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 600; cursor: pointer; }
+        .couple-status { position: sticky; top: 10px; align-self: flex-end; background: var(--glass); backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); z-index: 100; margin: 5px 0 10px 0; padding: 8px 14px; transition: opacity 0.3s ease; }
+        .couple-status .names { font-weight: 600; font-size: 13px; color: var(--accent); }
+        .couple-status .monthsary { font-size: 10px; color: #6b7280; text-transform: uppercase; }
+        header { text-align: center; margin-bottom: 15px; width: 100%; }
+        h1 { font-weight: 600; margin: 5px 0 0 0; font-size: 1.8rem; }
+        .subtitle { color: #6b7280; font-weight: 300; font-size: 0.9rem; margin-top: 2px; }
+        #fab { display: none; position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--accent); color: white; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); z-index: 2000; align-items: center; justify-content: center; }
+        #uploadOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 4000; align-items: center; justify-content: center; padding: 20px; }
+        #uploadSection { display: block; background: white; border-radius: 24px; width: 100%; max-width: 450px; box-sizing: border-box; padding: 18px; }
+        .file-input-container { display: flex; flex-direction: column; align-items: center; padding: 15px; border: 2px dashed #e5e7eb; border-radius: 18px; margin-bottom: 15px; background: rgba(255, 255, 255, 0.4); cursor: pointer; }
+        input[type="file"] { display: none; }
+        .custom-file-upload { background: white; padding: 8px 16px; border-radius: 10px; font-size: 13px; border: 1px solid #d1d5db; }
+        textarea { width: 100%; height: 80px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; resize: none; box-sizing: border-box; font-family: 'Poppins', sans-serif; margin-bottom: 15px; }
+        .btn-upload { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        #gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 1200px; }
+        .memory-card { border-radius: 20px; overflow: hidden; transition: 0.3s; box-shadow: 0 0 25px rgba(0, 0, 0, 0.08); }
+        .memory-card img { width: 100%; height: auto; display: block; aspect-ratio: 1/1; object-fit: cover; }
+        .caption-text { font-size: 11px; line-height: 1.4; margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        @media (min-width: 1000px) { #gallery { grid-template-columns: repeat(3, 1fr); gap: 20px; } .caption-text { font-size: 15px; } .memory-card .content { padding: 15px !important; } }
+        .caption-text.collapsed { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .see-more-btn { background: none; border: none; padding: 0; margin-top: 4px; font-size: 9px; font-weight: 600; cursor: pointer; color: inherit; opacity: 0.8; }
+        #actionModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 320px; text-align: center; }
+        .modal-btn { width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 12px; font-family: 'Poppins'; cursor: pointer; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1f2937; color: white; padding: 10px 20px; border-radius: 50px; z-index: 6000; transition: 0.3s; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+        .color-picker-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .color-label { font-size: 13px; font-weight: 500; color: #6b7280; }
+        .modern-picker-container { position: relative; width: 60px; height: 32px; border-radius: 20px; border: 2px solid #e5e7eb; overflow: hidden; cursor: pointer; }
+        #cardColorPicker { position: absolute; top: -10px; left: -10px; width: 100px; height: 100px; cursor: pointer; opacity: 0; }
+        .color-preview-bar { width: 100%; height: 100%; pointer-events: none; }
+        #editCaptionInput { width: 100%; height: 100px; padding: 15px; border: 1px solid #eef0f2; border-radius: 18px; background: #fcfcfd; font-family: 'Poppins', sans-serif; font-size: 14px; resize: none; box-sizing: border-box; margin-bottom: 20px; outline: none; }
+        .save-changes-btn { background: #7371fc !important; color: white !important; font-weight: 500 !important; box-shadow: 0 4px 12px rgba(115, 113, 252, 0.3); }
+        .back-btn { background: #e9ecef !important; color: #1f2937 !important; font-weight: 500 !important; }
+    </style>
+</head>
+<body>
+
+<button class="admin-login-btn" id="lockBtn" onclick="toggleAuth()">Log in</button>
+<button id="fab" onclick="document.getElementById('uploadOverlay').style.display='flex'">+</button>
+
+<div id="loginOverlay" onclick="closeAuth()">
+    <div class="login-card" onclick="event.stopPropagation()">
+        <h2>Welcome Back</h2>
+        <p>Enter the code to unlock our gallery studio.</p>
+        <input type="password" id="adminPass" class="login-input" placeholder="Secret Code">
+        <button class="login-submit" onclick="verifyPass()">Enter Studio</button>
+    </div>
+</div>
+
+<div class="couple-status" id="coupleStatus">
+    <div class="names">Ivan & Eunice</div>
+    <div id="monthsaryDisplay" class="monthsary">Calculating...</div>
+</div>
+
+<header>
+    <h1>Our Moments</h1>
+    <p class="subtitle">Let's cherish our moments together baby.</p>
+</header>
+
+<div id="uploadOverlay" onclick="this.style.display='none'">
+    <div class="upload-card" id="uploadSection" onclick="event.stopPropagation()">
+        <div class="file-input-container" onclick="document.getElementById('imageInput').click()">
+            <label class="custom-file-upload">Choose a Photo</label>
+            <input type="file" id="imageInput" accept="image/*" onchange="updateFileName()">
+            <p id="fileNameDisplay" style="font-size: 11px; color: #9ca3af; margin-top: 8px;">No file selected</p>
+        </div>
+        <textarea id="captionInput" placeholder="Write something sweet..."></textarea>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+            <label style="font-size: 12px; color: #6b7280;">Card Color:</label>
+            <input type="color" id="postColorPicker" value="#ffffff">
+        </div>
+        <button class="btn-upload" id="finalUploadBtn" onclick="addMemory()">Post Moment</button>
+    </div>
+</div>
+
+<div id="gallery"></div>
+
+<div id="toast">Message here</div>
+
+<script>
+    // --- GITHUB SERVER CONFIG ---
+    const config = {
+        token: "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",
+        repo:"velcss/ourmemories-", // <--- CHANGE THIS
+        jsonPath: "memories.json"
+    };
+
+    let isAdmin = false; 
+    const gallery = document.getElementById('gallery');
+    const fab = document.getElementById('fab');
+    let memories = [];
+
+    // --- FETCH DATA FROM GITHUB ON LOAD ---
+    window.onload = async () => {
+        if (localStorage.getItem('adminSession') === 'true') applyLoginState(true);
+        updateMonthsaryCountdown();
+        await loadMemories();
+    };
+
+    async function loadMemories() {
+        try {
+            const resp = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/${config.jsonPath}?t=${Date.now()}`);
+            if (resp.ok) {
+                memories = await resp.json();
+                renderGallery();
+            }
+        } catch (e) { console.log("Starting fresh..."); }
+    }
+
+    function renderGallery() {
+        gallery.innerHTML = "";
+        [...memories].reverse().forEach(m => renderCard(m.id, m.image, m.caption, m.bgColor, m.timestamp));
+    }
+
+    // --- UPLOAD TO GITHUB ---
+    async function addMemory() {
+        const file = document.getElementById('imageInput').files[0];
+        const caption = document.getElementById('captionInput').value.trim();
+        const bgColor = document.getElementById('postColorPicker').value;
+        const btn = document.getElementById('finalUploadBtn');
+
+        if (!file) return showToast("Pick a photo! 📸");
+        
+        btn.disabled = true;
+        btn.innerText = "Uploading to Cloud...";
+
+        try {
+            const base64 = await toBase64(file);
+            const fileName = `img_${Date.now()}.jpg`;
+            
+            // 1. Upload image file to GitHub
+            await githubFetch(`images/${fileName}`, "Add image", base64.split(',')[1]);
+
+            // 2. Update JSON data
+            const newMemory = {
+                id: Date.now(),
+                image: `https://raw.githubusercontent.com/${config.repo}/main/images/${fileName}`,
+                caption: caption,
+                bgColor: bgColor,
+                timestamp: Date.now()
+            };
+
+            memories.push(newMemory);
+            const currentJson = await getFileDetails(config.jsonPath);
+            await githubFetch(config.jsonPath, "Update memories list", btoa(JSON.stringify(memories, null, 2)), currentJson?.sha);
+
+            showToast("Posted to Gallery! ✨");
+            document.getElementById('uploadOverlay').style.display='none';
+            renderGallery();
+        } catch (e) {
+            showToast("Error uploading ❌");
+            console.error(e);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Post Moment";
+        }
+    }
+
+    async function githubFetch(path, message, content, sha = null) {
+        const body = { message, content };
+        if (sha) body.sha = sha;
+
+        return fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+            method: "PUT",
+            headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+    }
+
+    async function getFileDetails(path) {
+        const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+            headers: { "Authorization": `token ${config.token}` }
+        });
+        return resp.ok ? await resp.json() : null;
+    }
+
+    const toBase64 = file => new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => res(reader.result);
+        reader.onerror = rej;
+    });
+
+    // --- KEEPING YOUR ORIGINAL UI LOGIC ---
+    function applyLoginState(loggedIn) {
+        isAdmin = loggedIn;
+        document.getElementById('lockBtn').innerText = loggedIn ? "Log out" : "Log in";
+        fab.style.display = loggedIn ? 'flex' : 'none';
+        if (loggedIn) localStorage.setItem('adminSession', 'true');
+        else localStorage.removeItem('adminSession');
+    }
+
+    function verifyPass() {
+        if (document.getElementById('adminPass').value === "682025") {
+            applyLoginState(true);
+            document.getElementById('loginOverlay').style.display='none';
+            showToast("Welcome Back! ❤️");
+        } else showToast("Incorrect Code ❌");
+    }
+
+    function toggleAuth() { isAdmin ? applyLoginState(false) : document.getElementById('loginOverlay').style.display = 'flex'; }
+    function closeAuth() { document.getElementById('loginOverlay').style.display = 'none'; }
+    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    
+    function renderCard(id, image, caption, bgColor, timestamp) {
+        const div = document.createElement('div');
+        div.className = `memory-card`;
+        div.style.backgroundColor = bgColor;
+        div.innerHTML = `<img src="${image}"><div class="content" style="padding: 8px;"><p class="caption-text">${caption}</p></div>`;
+        gallery.prepend(div);
+    }
+
+    function updateMonthsaryCountdown() {
+        const display = document.getElementById('monthsaryDisplay');
+        const now = new Date();
+        let target = new Date(now.getFullYear(), now.getMonth(), 8);
+        if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; }
+        if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8);
+        display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`;
+    }
+    
+    function updateFileName() {
+        const f = document.getElementById('imageInput').files[0];
+        if (f) document.getElementById('fileNameDisplay').textContent = "Selected: " + f.name;
+    }
+</script>
+</body>
+</html>
