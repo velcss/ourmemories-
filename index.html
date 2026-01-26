@@ -279,31 +279,46 @@
     div.id = `mem-${id}`;
     div.style.backgroundColor = bgColor || "#ffffff";
     div.style.color = textColor;
-    
-    // Create image element
+    div.style.cursor = isAdmin ? 'pointer' : 'default';
+
+    // 1. Create the Image Element
     const imgEl = document.createElement('img');
-    imgEl.src = "https://placeholder.com/loading.gif"; // Temporary loader
-    
-    // Fetch the image data with the token
+    imgEl.alt = "Loading...";
+    imgEl.style.minHeight = "200px"; 
+    imgEl.style.background = "#eee";
+
+    // 2. Fetch the actual image data using your Token
     const token = localStorage.getItem('gh_token');
-    try {
-        const response = await fetch(image, {
-            headers: { "Authorization": `token ${token}` }
-        });
-        const data = await response.json();
-        imgEl.src = `data:image/jpeg;base64,${data.content}`;
-    } catch (e) {
-        console.error("Image load failed", e);
+    if (token) {
+        try {
+            const response = await fetch(image, {
+                headers: { "Authorization": `token ${token}` }
+            });
+            const data = await response.json();
+            // Convert GitHub's base64 data to a viewable image
+            imgEl.src = `data:image/jpeg;base64,${data.content}`;
+        } catch (e) {
+            console.error("Failed to load image:", e);
+            imgEl.alt = "Failed to load image ❌";
+        }
     }
 
+    const hasCaption = caption && caption.trim().length > 0;
+    const isLong = hasCaption && caption.length > 50;
+    
     div.onclick = () => { if(isAdmin) openActionMenu(id); };
     div.innerHTML = `
         <div class="content" style="padding: 8px;">
-            ${caption ? `<p class="caption-text">${caption}</p>` : ''}
-            <p class="time-ago" style="font-size: 8px; opacity: 0.7; text-align: right;">${formatTimeAgo(timestamp)}</p>
+            ${hasCaption ? `<p class="caption-text ${isLong ? 'collapsed' : ''}" id="cap-${id}">${caption}</p>` : ''}
+            ${isLong ? `<button class="see-more-btn" onclick="toggleCaption(event, ${id})">See more</button>` : ""}
+            <p class="time-ago" style="font-size: 8px; opacity: 0.7; text-align: right; margin-top: 5px;">
+                ${formatTimeAgo(timestamp)}
+            </p>
         </div>
     `;
-    div.prepend(imgEl); // Add the actual image
+    
+    // 3. Put the image at the top of the card
+    div.prepend(imgEl);
     gallery.appendChild(div);
 }
 
@@ -343,6 +358,7 @@
 </body>
 
 </html>
+
 
 
 
