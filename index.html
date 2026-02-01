@@ -1,470 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ivan ❤️ Eunice | Our Moments</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --accent: #6366f1;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --bg: #f3f4f6;
-            --glass: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moments | Creative Gallery</title>
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  <link rel="stylesheet" href="ivan.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f8fafc;
-            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                              radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                              radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        /* --- Header & Status --- */
-        header { text-align: center; margin: 40px 0; color: white; }
-        h1 { font-weight: 600; font-size: 2.2rem; margin: 0; letter-spacing: -1px; }
-        .subtitle { opacity: 0.8; font-weight: 300; }
-
-        .couple-status {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            padding: 12px 20px;
-            border-radius: 20px;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            position: sticky;
-            top: 20px;
-            z-index: 100;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
-        /* --- Gallery Grid --- */
-        #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .memory-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .memory-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
-        }
-
-        .memory-card img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            display: block;
-            background: #e5e7eb;
-        }
-
-        .card-content { padding: 20px; }
-        .card-caption { font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
-        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; opacity: 0.6; }
-
-        /* --- Modern Modals --- */
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            z-index: 5000;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modern-card {
-            background: white;
-            padding: 32px;
-            border-radius: 30px;
-            width: 100%;
-            max-width: 400px;
-            margin: auto;
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- Interactive Elements --- */
-        .btn-main {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-main:active { transform: scale(0.98); }
-
-        #fab {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 64px;
-            height: 64px;
-            background: var(--accent-gradient);
-            color: white;
-            border-radius: 50%;
-            border: none;
-            font-size: 32px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
-            z-index: 2000;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        #fab:hover { transform: rotate(90deg) scale(1.1); }
-
-        .admin-login-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 18px;
-            border-radius: 14px;
-            color: white;
-            font-size: 0.8rem;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        input, textarea {
-            width: 100%;
-            background: #f3f4f6;
-            border: 2px solid transparent;
-            padding: 14px;
-            border-radius: 14px;
-            margin-bottom: 15px;
-            font-family: inherit;
-            transition: 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1f2937;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 20px;
-            z-index: 6000;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-weight: 500;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        #toast.show { transform: translateX(-50%) translateY(0); }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Responsive Tweaks */
-        @media (max-width: 600px) {
-            #gallery { grid-template-columns: 1fr; }
-            h1 { font-size: 1.8rem; }
-        }
-    </style>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
-<body>
 
-    <button class="admin-login-btn" id="lockBtn" onclick="toggleAuth()">Log in</button>
-    
-    <div style="width: 100%; display: flex; justify-content: center;">
-        <div class="couple-status" id="coupleStatus">
-            <span class="names">Ivan & Eunice</span>
-            <span id="monthsaryDisplay" class="monthsary">Calculating...</span>
-        </div>
-    </div>
+<body class="font-['Poppins'] bg-gradient-to-b from-white to-rose-100 text-white p-0 m-0">
 
-    <header>
-        <h1>Our Moments</h1>
-        <p class="subtitle">Let's cherish our moments together, baby.</p>
-    </header>
+  <!-- MODERN RESPONSIVE NAVBAR -->
+  <div class="flex flex-wrap justify-center gap-4 mt-10 font-semibold px-4">
+    <a href="#memories"
+       class="px-4 py-2 rounded-full bg-purple-500/20 text-purple-500 hover:bg-purple-500 hover:text-white transition-all duration-300 text-sm sm:text-base">
+      Memories
+    </a>
+    <a href="#music"
+       class="px-4 py-2 rounded-full bg-purple-500/20 text-purple-500 hover:bg-purple-500 hover:text-white transition-all duration-300 text-sm sm:text-base">
+      Music
+    </a>
+    <a href="#info"
+       class="px-4 py-2 rounded-full bg-purple-500/20 text-purple-500 hover:bg-purple-500 hover:text-white transition-all duration-300 text-sm sm:text-base">
+      Info
+    </a>
+  </div>
 
-    <div id="gallery"></div>
+  <!-- MEMORIES SECTION -->
+  <p id="memories" class="text-purple-500 font-semibold text-3xl sm:text-4xl text-center pt-10 px-4">
+    Our memories
+  </p>
 
-    <button id="fab" onclick="openUpload()">+</button>
+  <!-- IMAGE SLIDER -->
+  <div class="relative max-w-full sm:max-w-xl mx-auto mt-8 shadow drop-shadow-2xl px-4">
+    <img id="sliderImage" src="images/slide1.jpg"
+         class="w-full h-[200px] sm:h-[400px] md:h-[450px] object-cover rounded-2xl shadow-lg transition-all duration-300 ease-in-out opacity-100"
+         alt="Memory">
+    <button onclick="prevImage()"
+            class="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-black/60 hover:bg-purple-500 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-sm sm:text-base">
+      ❮
+    </button>
+    <button onclick="nextImage()"
+            class="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-black/60 hover:bg-purple-500 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-sm sm:text-base">
+      ❯
+    </button>
+  </div>
 
-    <div id="loginOverlay" class="overlay" onclick="closeAuth()">
-        <div class="modern-card" onclick="event.stopPropagation()">
-            <h2 style="margin-top:0">Unlock Studio</h2>
-            <p style="color:var(--text-muted); font-size:0.9rem">Enter your secret code to manage memories.</p>
-            <input type="password" id="adminPass" placeholder="Secret Token">
-            <button class="btn-main" onclick="verifyPass()">Access Gallery</button>
-        </div>
-    </div>
+  <hr class="border-gray-400 my-20 sm:my-32 w-3/4 sm:w-2/4 mx-auto">
 
-    <div id="uploadOverlay" class="overlay" onclick="closeUpload()">
-        <div class="modern-card" onclick="event.stopPropagation()">
-            <h2 style="margin-top:0">New Moment</h2>
-            <div style="background:#f3f4f6; padding:30px; border-radius:20px; border:2px dashed #d1d5db; margin-bottom:15px; text-align:center; cursor:pointer" onclick="document.getElementById('imageInput').click()">
-                <span id="fileNameDisplay" style="color:var(--text-muted); font-size:0.9rem">Tap to upload photo</span>
-                <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="updateFileName()">
-            </div>
-            <textarea id="captionInput" placeholder="Write a sweet memory..."></textarea>
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px">
-                <span style="font-size:0.8rem; color:var(--text-muted)">Card Theme:</span>
-                <input type="color" id="postColorPicker" value="#ffffff" style="width:40px; height:40px; padding:0; border-radius:8px; border:none; background:none; cursor:pointer">
-            </div>
-            <button class="btn-upload btn-main" onclick="addMemory()">Post to Gallery</button>
-        </div>
-    </div>
+  <!-- MUSIC SECTION -->
+  <div id="music" class="max-w-full sm:max-w-xl mx-auto mt-10 aspect-video drop-shadow-xl px-4">
+    <p class="text-purple-500 font-semibold text-3xl sm:text-5xl text-center mb-6 sm:mb-10">
+      Favorite music
+    </p>
+    <iframe class="w-full h-full rounded-xl"
+            src="https://www.youtube.com/embed/r27t3H36jmU"
+            allow="autoplay"
+            title="YouTube video player"
+            frameborder="0"
+            allowfullscreen>
+    </iframe>
+  </div>
 
-    <div id="actionModal" class="overlay" onclick="closeModal()">
-        <div class="modern-card" onclick="event.stopPropagation()">
-            <div id="menuView">
-                <button class="btn-main" style="margin-bottom:10px" onclick="showEditView()">Edit Caption</button>
-                <button class="btn-main" style="background:#fee2e2; color:#dc2626; box-shadow:none" onclick="showConfirmDelete()">Delete Forever</button>
-            </div>
-            <div id="editView" style="display:none;">
-                <textarea id="editCaptionInput"></textarea>
-                <input type="color" id="cardColorPicker">
-                <button class="btn-main" style="margin-bottom:10px" onclick="triggerEdit()">Save Changes</button>
-                <button class="btn-main" style="background:#f3f4f6; color:var(--text-main); box-shadow:none" onclick="showMenuView()">Cancel</button>
-            </div>
-            <div id="deleteView" style="display:none;">
-                <p>This action cannot be undone.</p>
-                <button class="btn-main" style="background:#dc2626; margin-bottom:10px" onclick="triggerDelete()">Delete Now</button>
-                <button class="btn-main" style="background:#f3f4f6; color:var(--text-main); box-shadow:none" onclick="showMenuView()">Keep It</button>
-            </div>
-        </div>
-    </div>
+  <hr class="border-gray-400 my-20 sm:my-32 w-3/4 sm:w-2/4 mx-auto">
 
-    <div id="toast">Message here</div>
+  <!-- INFO SECTION -->
+  <div id="info" class="max-w-full sm:max-w-xl mx-auto mt-10 text-center px-4">
+    <p class="text-purple-500 font-semibold text-2xl sm:text-4xl">Info</p>
+    <p class="mt-4 text-white text-sm sm:text-base">
+      This is your info section.
+    </p>
+  </div>
 
-    <script>
-        const config = { repo: "velcss/ourmemories-", jsonPath: "memories.json" };
-        let isAdmin = false;
-        let memories = [];
-        let currentActiveId = null;
 
-        // Initialization
-        window.onload = async () => {
-            const savedToken = localStorage.getItem('gh_token');
-            if (savedToken) applyLoginState(true);
-            updateMonthsaryCountdown();
-            await loadMemories();
-        };
+  <!-- BACK TO TOP BUTTON -->
+<button id="backToTop"
+        class="fixed bottom-6 right-6 bg-purple-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg hover:bg-purple-600 hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none z-50">
+  ↑
+</button>
 
-        async function loadMemories() {
-            try {
-                const resp = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/${config.jsonPath}?t=${Date.now()}`);
-                if (resp.ok) { memories = await resp.json(); refreshGallery(); }
-            } catch (e) { showToast("Sync Error ❌"); }
-        }
 
-        // Auth
-        function verifyPass() {
-            const tokenInput = document.getElementById('adminPass').value.trim();
-            if (tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_")) {
-                localStorage.setItem('gh_token', tokenInput);
-                applyLoginState(true);
-                location.reload(); 
-            } else { showToast("Invalid Key ❌"); }
-        }
+  <!-- SLIDER SCRIPT -->
+  <script>
+    const images = [
+      "images/slide1.jpg",
+      "images/slide2.jpg",
+      "images/slide3.jpg"
+    ];
 
-        function applyLoginState(loggedIn) {
-            isAdmin = loggedIn;
-            document.getElementById('fab').style.display = loggedIn ? 'flex' : 'none';
-            document.getElementById('lockBtn').innerText = loggedIn ? "Log out" : "Log in";
-            if (!loggedIn) localStorage.removeItem('gh_token');
-        }
+    let currentIndex = 0;
+    const sliderImage = document.getElementById("sliderImage");
 
-        function toggleAuth() {
-            if (isAdmin) { applyLoginState(false); location.reload(); }
-            else { document.getElementById('loginOverlay').style.display = 'flex'; }
-        }
-        function closeAuth() { document.getElementById('loginOverlay').style.display = 'none'; }
-        function openUpload() { document.getElementById('uploadOverlay').style.display = 'flex'; }
-        function closeUpload() { document.getElementById('uploadOverlay').style.display = 'none'; }
+    function animateChange(newIndex, direction = 1) {
+      // fade out + slide
+      sliderImage.classList.remove("opacity-100", "translate-x-0");
+      sliderImage.classList.add(
+        "opacity-0",
+        direction === 1 ? "translate-x-4" : "-translate-x-4"
+      );
 
-        // API
-        async function githubFetch(path, message, content, sha = null) {
-            const token = localStorage.getItem('gh_token');
-            const body = { message, content, sha };
-            return fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
-                method: "PUT",
-                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
-        }
+      setTimeout(() => {
+        currentIndex = newIndex;
+        sliderImage.src = images[currentIndex];
 
-        async function getFileDetails(path) {
-            const token = localStorage.getItem('gh_token');
-            const resp = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
-                headers: { "Authorization": `token ${token}` }
-            });
-            return resp.ok ? await resp.json() : null;
-        }
+        // reset position instantly
+        sliderImage.classList.remove("translate-x-4", "-translate-x-4");
+        sliderImage.classList.add("translate-x-0");
 
-        // Actions
-        async function addMemory() {
-            const file = document.getElementById('imageInput').files[0];
-            const caption = document.getElementById('captionInput').value;
-            const bgColor = document.getElementById('postColorPicker').value;
-            if (!file) return showToast("Pick a photo! 📸");
-            
-            const btn = document.querySelector('.btn-upload');
-            btn.innerText = "Processing...";
-            btn.disabled = true;
+        // fade back in
+        sliderImage.classList.remove("opacity-0");
+        sliderImage.classList.add("opacity-100");
+      }, 200);
+    }
 
-            try {
-                const base64 = await compressImage(file);
-                const fileName = `images/img_${Date.now()}.jpg`;
-                showToast("Uploading... ☁️");
+    function nextImage() {
+      const next = (currentIndex + 1) % images.length;
+      animateChange(next, 1);
+    }
 
-                const [imgResp, jsonFile] = await Promise.all([
-                    githubFetch(fileName, "Upload Photo", base64),
-                    getFileDetails(config.jsonPath)
-                ]);
+    function prevImage() {
+      const prev = (currentIndex - 1 + images.length) % images.length;
+      animateChange(prev, -1);
+    }
 
-                memories.push({ id: Date.now(), image: `https://api.github.com/repos/${config.repo}/contents/${fileName}`, caption, bgColor, timestamp: Date.now() });
-                await githubFetch(config.jsonPath, "Add Memory", btoa(unescape(encodeURIComponent(JSON.stringify(memories, null, 2)))), jsonFile?.sha);
-                location.reload();
-            } catch (e) { showToast("Failed ❌"); btn.disabled = false; }
-        }
+    // BACK TO TOP BUTTON SCRIPT
+    const backToTop = document.getElementById("backToTop");
 
-        async function triggerDelete() {
-            const jsonFile = await getFileDetails(config.jsonPath);
-            memories = memories.filter(m => m.id !== currentActiveId);
-            await githubFetch(config.jsonPath, "Delete Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
-            location.reload();
-        }
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 200) {
+        backToTop.classList.remove("opacity-0", "pointer-events-none");
+        backToTop.classList.add("opacity-100");
+      } else {
+        backToTop.classList.remove("opacity-100");
+        backToTop.classList.add("opacity-0", "pointer-events-none");
+      }
+    });
 
-        async function triggerEdit() {
-            const idx = memories.findIndex(m => m.id === currentActiveId);
-            memories[idx].caption = document.getElementById('editCaptionInput').value;
-            memories[idx].bgColor = document.getElementById('cardColorPicker').value;
-            const jsonFile = await getFileDetails(config.jsonPath);
-            await githubFetch(config.jsonPath, "Edit Memory", btoa(JSON.stringify(memories, null, 2)), jsonFile?.sha);
-            location.reload();
-        }
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  </script>
 
-        // UI Rendering
-        function refreshGallery() {
-            const g = document.getElementById('gallery');
-            g.innerHTML = "";
-            const sorted = [...memories].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            sorted.forEach(m => {
-                const card = document.createElement('div');
-                card.className = 'memory-card';
-                card.style.backgroundColor = m.bgColor || "#ffffff";
-                card.style.color = getContrastYIQ(m.bgColor || "#ffffff");
-                card.onclick = () => { if(isAdmin) openActionMenu(m.id); };
-
-                const img = document.createElement('img');
-                const token = localStorage.getItem('gh_token');
-                if (token) {
-                    fetch(m.image, { headers: { "Authorization": `token ${token}` }})
-                        .then(r => r.json()).then(data => img.src = `data:image/jpeg;base64,${data.content}`);
-                }
-
-                card.innerHTML = `
-                    <div class="card-content">
-                        <p class="card-caption">${m.caption || ''}</p>
-                        <div class="card-meta">
-                            <span>#Memories</span>
-                            <span>${formatTimeAgo(m.timestamp)}</span>
-                        </div>
-                    </div>`;
-                card.prepend(img);
-                g.appendChild(card);
-            });
-        }
-
-        // Utils
-        async function compressImage(file) {
-            return new Promise((res) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX = 1200;
-                        let w = img.width, h = img.height;
-                        if (w > MAX) { h *= MAX / w; w = MAX; }
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        res(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
-                    };
-                };
-            });
-        }
-
-        function formatTimeAgo(t) {
-            const s = Math.floor((new Date() - new Date(parseInt(t))) / 1000);
-            if (s < 60) return 'Just now';
-            if (s < 3600) return Math.floor(s/60) + 'm ago';
-            if (s < 86400) return Math.floor(s/3600) + 'h ago';
-            return new Date(parseInt(t)).toLocaleDateString();
-        }
-
-        function getContrastYIQ(hex){
-            hex = hex.replace("#", "");
-            const r = parseInt(hex.substr(0,2),16), g = parseInt(hex.substr(2,2),16), b = parseInt(hex.substr(4,2),16);
-            return ((r*299)+(g*587)+(b*114))/1000 >= 128 ? '#1f2937' : '#ffffff';
-        }
-
-        function openActionMenu(id) { currentActiveId = id; document.getElementById('actionModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('actionModal').style.display = 'none'; }
-        function showEditView() { document.getElementById('menuView').style.display = 'none'; document.getElementById('editView').style.display = 'block'; }
-        function showMenuView() { document.getElementById('editView').style.display = 'none'; document.getElementById('deleteView').style.display = 'none'; document.getElementById('menuView').style.display = 'block'; }
-        function showConfirmDelete() { document.getElementById('menuView').style.display = 'none'; document.getElementById('deleteView').style.display = 'block'; }
-        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-        function updateFileName() { const f = document.getElementById('imageInput').files[0]; if(f) document.getElementById('fileNameDisplay').innerText = f.name; }
-        function updateMonthsaryCountdown() {
-            const display = document.getElementById('monthsaryDisplay');
-            const now = new Date();
-            let target = new Date(now.getFullYear(), now.getMonth(), 8);
-            if (now.getDate() === 8) { display.innerHTML = "❤️ Happy Monthsary! ❤️"; return; }
-            if (now > target) target = new Date(now.getFullYear(), now.getMonth() + 1, 8);
-            display.innerHTML = `${Math.ceil((target - now) / 86400000)} Days until Monthsary`;
-        }
-    </script>
 </body>
 </html>
